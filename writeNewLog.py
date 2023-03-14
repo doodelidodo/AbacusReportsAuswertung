@@ -1,14 +1,25 @@
 import pandas as pd
-from sqlalchemy import create_engine
+import sqlite3
 import os
 
+
 def get_filename(path):
+    print(path)
+    print(os.path.basename(path))
     return os.path.basename(path)
 
-path = r"D:\Abacus\ReportAufrufe\ReportAufrufe.sqlite"
 
-# Load CSV into a Pandas DataFrame
-df = pd.read_csv('D:/Abacus/abac/log/abaengine/rep/run.log', usecols=range(15))
+# r"D:\Abacus\ReportAufrufe\ReportAufrufe.sqlite"
+db_path = r"D:\Abacus\ReportAufrufe\ReportAufrufe.sqlite"
+
+
+# Load the latest timestamp from the database
+conn = sqlite3.connect('ReportAufrufe.sqlite')
+# Load data from the 'my_table' table into a Pandas DataFrame
+latest_timestamp = pd.read_sql_query('SELECT MAX(TimeStamp) FROM ReportAufrufe', conn).iloc[0, 0]
+
+# Load CSV into a Pandas DataFrame D:/Abacus/abac/log/abaengine/rep/run.log
+df = pd.read_csv('log/run.log', usecols=range(15))
 df.columns = df.columns.str.strip()
 df = df.rename(columns={"Report": "Pfad"})
 df["Report"] = df['Pfad'].apply(get_filename)
@@ -16,11 +27,16 @@ df["Report"] = df['Pfad'].apply(get_filename)
 # Convert the 'TimeStamp' column to a datetime format
 df['TimeStamp'] = pd.to_datetime(df['TimeStamp'])
 
-# Create a SQLAlchemy engine
-engine = create_engine(f"sqlite:///{path}", echo=True)
+# Drop duplicates based on the 'TimeStamp' column
+df = df.drop_duplicates(subset=['TimeStamp'])
 
-# Append the DataFrame to the SQLite table, replacing duplicates
-df.to_sql('ReportAufrufe', con=engine, if_exists='replace', index=False, chunksize=1000)
+if latest_timestamp is not None:
+    print(latest_timestamp)
+    # Filter DataFrame to only include new entries
+    df = df[df['TimeStamp'] > latest_timestamp]
 
-# Close the SQLAlchemy engine
-engine.dispose()
+# Create a new SQLAlchemy engine and append the new entries to the SQLite table, replacing duplicates
+if not df.empty:
+    df.to_sql('ReportAufrufe', con=conn, if_exists='append', index=False, chunksize=1000)
+else:
+    print('dataframe is empty')

@@ -2,3 +2,4 @@
 /output
 ReportAufrufe.sqlite
 test.csv
+*.sqlite

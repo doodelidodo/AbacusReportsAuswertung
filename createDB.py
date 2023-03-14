@@ -7,6 +7,7 @@ engine = create_engine('sqlite:///ReportAufrufe.sqlite', echo=True)
 # Basisdeklaration für ORM-Objekte erstellen
 Base = declarative_base()
 
+
 # ORM-Klasse für Tabelle definieren
 class Table(Base):
     __tablename__ = 'ReportAufrufe'
@@ -27,6 +28,7 @@ class Table(Base):
     SubReportFields = Column(String)
     Tables = Column(Integer)
     Finds = Column(Integer)
+
 
 # Tabelle erstellen
 Base.metadata.create_all(engine)

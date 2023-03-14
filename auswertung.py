@@ -11,7 +11,7 @@ print(df.head())
 # Close the SQLite connection
 conn.close()
 
-counts = df['Report'].value_counts().nlargest(20)
+counts = df['Report'].value_counts().nlargest(10)
 
 print(df["Report"].head())
 
