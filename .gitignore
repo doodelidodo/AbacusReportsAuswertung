@@ -3,3 +3,7 @@
 ReportAufrufe.sqlite
 test.csv
 *.sqlite
+*.xlsx
+*.csv
+*.pdf
+/__pycache__
