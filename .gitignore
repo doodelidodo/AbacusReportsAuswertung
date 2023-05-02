@@ -1,9 +1,10 @@
 /log
 /output
+/__pycache__
 ReportAufrufe.sqlite
 test.csv
 *.sqlite
 *.xlsx
 *.csv
 *.pdf
-/__pycache__
+*.ipynb
