@@ -13,7 +13,6 @@ conn.close()
 
 counts = df['Report'].value_counts().nlargest(10)
 
-
 # Datum konvertieren
 df['TimeStamp'] = pd.to_datetime(df['TimeStamp'])
 
