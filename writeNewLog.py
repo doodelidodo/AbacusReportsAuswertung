@@ -7,10 +7,10 @@ def get_filename(path):
     return os.path.basename(path)
 
 # Configure logging
-logging.basicConfig(filename='error_log.txt', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='D:/Abacus/ReportAufrufe/error_log.txt', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
 try:
-    # r"D:\Abacus\ReportAufrufe\ReportAufrufe.sqlite"
+    # r"D:\Abacus\abac\kd\abav\datenbanken\Aufrufe_LongRunning_AbaReports\ReportAufrufe.sqlite"
     db_path = r"D:\Abacus\abac\kd\abav\datenbanken\Aufrufe_LongRunning_AbaReports\ReportAufrufe.sqlite"
 
 
@@ -19,7 +19,8 @@ try:
     # Load data from the 'my_table' table into a Pandas DataFrame
     latest_timestamp = pd.read_sql_query('SELECT MAX(TimeStamp) FROM ReportAufrufe', conn).iloc[0, 0]
 
-    # Load CSV into a Pandas DataFrame D:/Abacus/abac/log/abaengine/rep/run.log
+    # D:/Abacus/abac/log/abaengine/rep/run.log
+    # D:/Abacus/abac/log/abaengine/prl/run.log
     df = pd.read_csv('D:/Abacus/abac/log/abaengine/rep/run.log', usecols=range(15))
     df_snap = pd.read_csv('D:/Abacus/abac/log/abaengine/prl/run.log', usecols=range(15), index_col=False)
     df = pd.concat([df, df_snap])
