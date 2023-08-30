@@ -1,13 +1,17 @@
 import pandas as pd
 import sqlite3
 import os
-
+import logging
 
 def get_filename(path):
     return os.path.basename(path)
 
+# Configure logging
+logging.basicConfig(filename='error_log.txt', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+
+
 # r"D:\Abacus\ReportAufrufe\ReportAufrufe.sqlite"
-db_path = r"D:\Abacus\ReportAufrufe\ReportAufrufe.sqlite"
+db_path = r"D:\Abacus\abac\kd\abav\datenbanken\Aufrufe_LongRunning_AbaReports\ReportAufrufe.sqlite"
 
 
 # Load the latest timestamp from the database
@@ -17,9 +21,16 @@ latest_timestamp = pd.read_sql_query('SELECT MAX(TimeStamp) FROM ReportAufrufe',
 
 # Load CSV into a Pandas DataFrame D:/Abacus/abac/log/abaengine/rep/run.log
 df = pd.read_csv('D:/Abacus/abac/log/abaengine/rep/run.log', usecols=range(15))
+df_snap = pd.read_csv('D:/Abacus/abac/log/abaengine/prl/run.log', usecols=range(15), index_col=False)
+df = pd.concat([df, df_snap])
+
 df.columns = df.columns.str.strip()
+df = df.replace({'"': ''}, regex=True)
+df = df[~df['Report'].str.endswith('.tmp')]
+df = df[~df.Report.str.contains('8370')]
 df = df.rename(columns={"Report": "Pfad"})
 df["Report"] = df['Pfad'].apply(get_filename)
+
 
 # Convert the 'TimeStamp' column to a datetime format
 df['TimeStamp'] = pd.to_datetime(df['TimeStamp'])

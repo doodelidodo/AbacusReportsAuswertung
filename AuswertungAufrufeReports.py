@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from datetime import datetime, timedelta
 
-db_path = r"D:\Abacus\ReportAufrufe\ReportAufrufe.sqlite"
+db_path = r"D:\Abacus\abac\kd\abav\datenbanken\Aufrufe_LongRunning_AbaReports\ReportAufrufe.sqlite"
 #Create a SQLite connection
 conn = sqlite3.connect(db_path)
 
