@@ -1,35 +1,26 @@
-import pandas as pd
 import sqlite3
-import os
 
-def get_filename(path):
-    return os.path.basename(path)
+# Verbindung zur SQLite-Datenbank herstellen
+conn = sqlite3.connect('ReportAufrufe.sqlite')
 
-# r"D:\Abacus\ReportAufrufe\ReportAufrufe.sqlite"
-db_path = r"ReportAufrufe.sqlite"
-
-
-# Load the latest timestamp from the database
-conn = sqlite3.connect(db_path)
-
-print("Connected to SQLite")
- 
-# Getting all tables from sqlite_master
-sql_query = """SELECT name FROM sqlite_master
-WHERE type='table';"""
- 
-# Creating cursor object using connection object
+# Erstelle ein SQLite-Cursor-Objekt
 cursor = conn.cursor()
-     
-# executing our sql query
-cursor.execute(sql_query)
-print("List of tables\n")
-    
-# printing all tables list
-print(cursor.fetchall())
 
-df = pd.read_sql_query('SELECT * FROM ReportAufrufe', conn)
-latest_timestamp = pd.read_sql_query('SELECT MIN(TimeStamp) FROM ReportAufrufe', conn).iloc[0, 0]
-print(latest_timestamp)
+# Tabellenname
+table_name = "ReportAufrufe"
 
+# Indexliste für die Tabelle abrufen
+cursor.execute(f"PRAGMA index_list({table_name})")
+index_list = cursor.fetchall()
+
+# Überprüfen, ob Indexe vorhanden sind
+if index_list:
+    print(f"Es gibt Indexe auf der Tabelle {table_name}:")
+    for index_info in index_list:
+        index_name = index_info[1]
+        print(f"- Indexname: {index_name}")
+else:
+    print(f"Es gibt keine Indexe auf der Tabelle {table_name}.")
+
+# Verbindung schließen
 conn.close()
